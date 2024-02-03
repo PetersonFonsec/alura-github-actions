@@ -8,14 +8,11 @@ on:
     branches: [ "main" ]
   pull_request:
     branches: [ "main" ]
-
+    
 jobs:
 
-  build:
+  setup:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        go_version: ['1.18', '1.17', '>=1.18']
     steps:
     - uses: actions/checkout@v3
 
@@ -29,9 +26,21 @@ jobs:
       
     - name: Create-DB
       run: docker-compose up -d
-      
-    - name: Test
-      run: go test -v main.go 
-      
-    - name: Build
-      run: go build -v main.go 
+
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        go_version: ['1.18', '1.17', '>=1.18']
+    steps:   
+      - name: Test
+        run: go test -v main.go 
+
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        go_version: ['1.18', '1.17', '>=1.18']
+    steps:   
+      - name: Build
+        run: go build -v main.go 
